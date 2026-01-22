@@ -78,7 +78,7 @@ cp .env.example .env
 
 ## 📊 Estado del Proyecto
 
-**Estado:** � Activo / En Desarrollo / Mantenimiento.
+**Estado:** Activo / En Desarrollo / Mantenimiento.
 
 El código base se encuentra estable para sus funciones principales (registro de necesidades, mapa interactivo, filtros y panel administrativo básico). Se continúa trabajando en mejoras de UX y validación de datos.
 
