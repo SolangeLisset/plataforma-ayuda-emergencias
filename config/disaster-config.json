@@ -1,0 +1,106 @@
+{
+  "general": {
+    "appName": "Ayuda Civil",
+    "countryCode": "CL",
+    "currencyCode": "CLP",
+    "timezone": "America/Santiago"
+  },
+  "emergency": {
+    "type": "WILDFIRE",
+    "name": "Incendios Forestales 2026",
+    "description": "Plataforma de coordinación de ayuda para afectados por los incendios."
+  },
+  "ui": {
+    "primaryColor": "#DC2626",
+    "secondaryColor": "#F59E0B",
+    "logoUrl": "/logo-incendios.png"
+  },
+  "categories": [
+    {
+      "id": "FOOD",
+      "label": "Alimentos",
+      "icon": "Utensils",
+      "color": "blue"
+    },
+    {
+      "id": "WATER",
+      "label": "Agua Potable",
+      "icon": "Droplet",
+      "color": "cyan"
+    },
+    {
+      "id": "CLOTHES",
+      "label": "Ropa y Abrigo",
+      "icon": "Shirt",
+      "color": "purple"
+    },
+    {
+      "id": "MEDICAL",
+      "label": "Salud / Medicamentos",
+      "icon": "Stethoscope",
+      "color": "red"
+    },
+    {
+      "id": "PETS",
+      "label": "Mascotas",
+      "icon": "Dog",
+      "color": "orange"
+    },
+    {
+      "id": "MATERIALS",
+      "label": "Materiales de Construcción",
+      "icon": "Hammer",
+      "color": "gray"
+    },
+    {
+      "id": "TRANSPORT",
+      "label": "Transporte / Logística",
+      "icon": "Truck",
+      "color": "green"
+    }
+  ],
+  "locations": {
+    "type": "regions_communes",
+    "data": [
+      {
+        "name": "Ñuble",
+        "subdivisions": [
+          "Chillán",
+          "Ránquil",
+          "Quillón",
+          "Trehuaco",
+          "Coelemu",
+          "San Carlos",
+          "Ñipas"
+        ]
+      },
+      {
+        "name": "Biobío",
+        "subdivisions": [
+          "Concepción",
+          "Talcahuano",
+          "Penco",
+          "Tomé",
+          "Laja",
+          "Santa Juana",
+          "Nacimiento",
+          "Los Ángeles",
+          "San Pedro de la Paz"
+        ]
+      },
+      {
+        "name": "Araucanía",
+        "subdivisions": [
+          "Temuco",
+          "Padre Las Casas",
+          "Villarrica",
+          "Pucón",
+          "Angol",
+          "Purén",
+          "Lumaco",
+          "Galvarino"
+        ]
+      }
+    ]
+  }
+}
