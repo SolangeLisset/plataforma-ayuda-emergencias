@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Menu, X, LogOut, User as UserIcon } from 'lucide-react';
+import { Menu, X, LogOut, User as UserIcon, MessageSquare } from 'lucide-react';
 
 const Navbar = ({ appName }) => {
     const { user, logout } = useAuth();
@@ -26,6 +26,12 @@ const Navbar = ({ appName }) => {
                         <Link to="/needs" className="text-gray-700 hover:text-red-600 font-medium">Necesidades</Link>
                         <Link to="/map" className="text-gray-700 hover:text-red-600 font-medium">Ver Mapa</Link>
                         <Link to="/needs/new" className="text-gray-700 hover:text-red-600 font-medium">Solicitar Ayuda</Link>
+                        {user && (
+                            <Link to="/inbox" className="text-gray-700 hover:text-red-600 font-medium flex items-center gap-1.5 bg-gray-50 px-3 py-1.5 rounded-lg transition-all border border-transparent hover:border-gray-200">
+                                <MessageSquare size={18} className="text-red-500" />
+                                Mis Mensajes
+                            </Link>
+                        )}
                         <a href="#emergency-numbers" className="bg-red-600 text-white px-4 py-2 rounded-full font-bold hover:bg-red-700 transition animate-pulse shadow-lg flex items-center gap-2">
                             🚨 SOS
                         </a>
@@ -63,6 +69,11 @@ const Navbar = ({ appName }) => {
                     <Link to="/needs" className="block py-2 text-gray-700">Necesidades</Link>
                     <Link to="/map" className="block py-2 text-gray-700">Ver Mapa</Link>
                     <Link to="/needs/new" className="block py-2 text-gray-700">Solicitar Ayuda</Link>
+                    {user && (
+                        <Link to="/inbox" className="block py-2 text-red-600 font-bold flex items-center gap-2" onClick={() => setIsOpen(false)}>
+                            <MessageSquare size={18} /> Mis Mensajes
+                        </Link>
+                    )}
                     <a href="#emergency-numbers" className="block py-2 text-red-600 font-bold flex items-center gap-2">
                         🚨 SOS / Números de Emergencia
                     </a>
