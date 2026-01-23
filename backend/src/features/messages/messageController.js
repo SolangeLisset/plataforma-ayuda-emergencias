@@ -19,7 +19,7 @@ exports.sendMessage = async (req, res) => {
         });
 
         const fullMessage = await Message.findByPk(message.id, {
-            include: [{ model: User, as: 'sender', attributes: ['name', 'email'] }]
+            include: [{ model: User, as: 'sender', attributes: ['fullName', 'email'] }]
         });
 
         // Emit socket event
@@ -39,7 +39,7 @@ exports.getMessagesByNeed = async (req, res) => {
 
         const messages = await Message.findAll({
             where: { needId },
-            include: [{ model: User, as: 'sender', attributes: ['name', 'email'] }],
+            include: [{ model: User, as: 'sender', attributes: ['fullName', 'email'] }],
             order: [['createdAt', 'ASC']]
         });
 
@@ -82,13 +82,15 @@ exports.getUserConversations = async (req, res) => {
         const conversations = await Promise.all(allInvolvedNeedIds.map(async (needId) => {
             const lastMessage = await Message.findOne({
                 where: { needId },
-                include: [{ model: User, as: 'sender', attributes: ['name'] }],
+                include: [{ model: User, as: 'sender', attributes: ['fullName'] }],
                 order: [['createdAt', 'DESC']]
             });
 
             const need = await Need.findByPk(needId, {
-                attributes: ['id', 'title', 'status', 'type']
+                attributes: ['id', 'title', 'status', 'type', 'userId']
             });
+
+            if (!need) return null;
 
             if (!lastMessage && need.userId === userId) {
                 // User owns the need but no messages yet
@@ -110,7 +112,7 @@ exports.getUserConversations = async (req, res) => {
                 needStatus: need.status,
                 needType: need.type,
                 lastMessage: lastMessage.content,
-                lastSender: lastMessage.sender?.name,
+                lastSender: lastMessage.sender?.fullName,
                 updatedAt: lastMessage.createdAt
             };
         }));

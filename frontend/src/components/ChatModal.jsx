@@ -113,7 +113,7 @@ const ChatModal = ({ need, onClose }) => {
                                                 to={`/profile/${msg.senderId}`}
                                                 className="font-black text-[9px] uppercase tracking-wider mb-1 text-red-600 block hover:underline"
                                             >
-                                                {msg.sender?.name}
+                                                {msg.sender?.fullName}
                                             </Link>
                                         )}
                                         <p className="leading-relaxed">{msg.content}</p>
