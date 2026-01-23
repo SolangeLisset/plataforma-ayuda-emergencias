@@ -3,7 +3,7 @@ import api from '../services/api';
 import { useConfig } from '../context/ConfigContext';
 import { useAuth } from '../context/AuthContext';
 import OfferHelpModal from '../components/OfferHelpModal';
-import { MapPin, Calendar, CheckCircle } from 'lucide-react';
+import { MapPin, Calendar, CheckCircle, Search, X } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 import { Helmet } from 'react-helmet-async';
 
@@ -13,6 +13,7 @@ const NeedList = () => {
     const { showToast } = useToast();
     const [needs, setNeeds] = useState([]);
     const [filters, setFilters] = useState({ region: '', category: '', type: '' });
+    const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(true);
     const [selectedNeed, setSelectedNeed] = useState(null);
 
@@ -36,6 +37,16 @@ const NeedList = () => {
             setLoading(false);
         }
     };
+
+    const filteredNeeds = needs.filter(need => {
+        const searchLower = searchTerm.toLowerCase();
+        return (
+            need.title.toLowerCase().includes(searchLower) ||
+            need.description.toLowerCase().includes(searchLower) ||
+            need.region.toLowerCase().includes(searchLower) ||
+            need.commune.toLowerCase().includes(searchLower)
+        );
+    });
 
     const getCategoryLabel = (catCode) => {
         return config.categories.find(c => c.id === catCode)?.label || catCode;
@@ -61,6 +72,28 @@ const NeedList = () => {
                 <meta name="description" content={`Consulta las necesidades y ofrecimientos de ayuda en tiempo real. Filtra por región y categoría para coordinar apoyo en ${config.general.countryCode}.`} />
             </Helmet>
             <h1 className="text-2xl sm:text-3xl font-bold mb-4 text-gray-800">Listado de Ayuda</h1>
+
+            {/* Search Bar */}
+            <div className="relative mb-6">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                    <Search size={18} />
+                </div>
+                <input
+                    type="text"
+                    placeholder="Buscar por alimento, refugio, ciudad o palabra clave..."
+                    className="w-full bg-white border border-gray-200 rounded-xl py-3 pl-10 pr-10 text-sm shadow-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition"
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
+                />
+                {searchTerm && (
+                    <button
+                        onClick={() => setSearchTerm('')}
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition"
+                    >
+                        <X size={18} />
+                    </button>
+                )}
+            </div>
 
             {/* Filters Section */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6 sticky top-0 z-10 sm:relative sm:top-auto">
@@ -147,13 +180,13 @@ const NeedList = () => {
 
             {loading ? (
                 <div className="flex justify-center py-20"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div></div>
-            ) : needs.length === 0 ? (
+            ) : filteredNeeds.length === 0 ? (
                 <div className="bg-gray-50 rounded-xl p-10 text-center text-gray-500 border-2 border-dashed border-gray-200">
-                    No hay registros con estos filtros en este momento.
+                    No hay registros que coincidan con tu búsqueda o filtros.
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                    {needs.map(need => (
+                    {filteredNeeds.map(need => (
                         <div key={need.id} className={`bg-white rounded-xl shadow-sm border-2 p-4 sm:p-5 hover:shadow-md transition flex flex-col ${need.type === 'OFFER' ? 'border-green-100 bg-green-50/5' : 'border-transparent'}`}>
                             <div className="flex justify-between items-start mb-3">
                                 <div className="flex flex-wrap gap-1.5">
