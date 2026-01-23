@@ -3,6 +3,8 @@ import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { Check, Trash2, CheckCircle, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import imageCompression from 'browser-image-compression';
 
 const AdminDashboard = () => {
     const { user } = useAuth();
@@ -44,8 +46,20 @@ const AdminDashboard = () => {
         try {
             const formData = new FormData();
             formData.append('status', 'FULFILLED');
+
             if (file) {
-                formData.append('evidence', file);
+                const options = {
+                    maxSizeMB: 0.2, // 200KB
+                    maxWidthOrHeight: 1280,
+                    useWebWorker: true
+                };
+                try {
+                    const compressedFile = await imageCompression(file, options);
+                    formData.append('evidence', compressedFile);
+                } catch (err) {
+                    console.error('Compression error:', err);
+                    formData.append('evidence', file); // Fallback
+                }
             }
 
             await api.put(`/needs/${id}`, formData);

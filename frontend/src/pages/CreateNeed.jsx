@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { useToast } from '../context/ToastContext';
+import imageCompression from 'browser-image-compression';
 
 const CreateNeed = () => {
     const { config } = useConfig();
@@ -35,9 +36,25 @@ const CreateNeed = () => {
         e.preventDefault();
         setLoading(true);
         try {
+            let imageToUpload = image;
+
+            if (image) {
+                const options = {
+                    maxSizeMB: 0.2, // ~200KB
+                    maxWidthOrHeight: 1280,
+                    useWebWorker: true,
+                };
+                try {
+                    imageToUpload = await imageCompression(image, options);
+                } catch (compressionErr) {
+                    console.error('Compression error:', compressionErr);
+                    // Fallback to original image if compression fails
+                }
+            }
+
             const data = new FormData();
             Object.keys(formData).forEach(key => data.append(key, formData[key]));
-            if (image) data.append('image', image);
+            if (imageToUpload) data.append('image', imageToUpload);
 
             await api.post('/needs', data);
             showToast('Solicitud publicada con éxito', 'success');
