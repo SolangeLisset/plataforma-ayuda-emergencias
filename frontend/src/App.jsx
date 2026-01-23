@@ -61,7 +61,8 @@ function App() {
                     </div>
                 </Router>
             </ToastProvider>
-            );
+        </HelmetProvider>
+    );
 }
 
-            export default App;
+export default App;
