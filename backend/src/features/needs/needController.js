@@ -26,7 +26,7 @@ exports.createNeed = async (req, res) => {
             return res.status(429).json({ msg: 'Has creado demasiadas solicitudes recientemente. Intenta más tarde.' });
         }
 
-        const { title, description, category, region, commune, latitude, longitude, petStatus, contactName, contactPhone } = req.body;
+        const { title, description, category, region, commune, latitude, longitude, petStatus, contactName, contactPhone, type } = req.body;
         const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
         // Custom validation for guests
@@ -44,6 +44,7 @@ exports.createNeed = async (req, res) => {
             commune,
             latitude,
             longitude,
+            type: type || 'REQUEST',
             petStatus: category === 'PETS' ? petStatus : null,
             contactName: req.user ? req.user.fullName : contactName,
             contactPhone: req.user ? req.user.phone : contactPhone
@@ -58,12 +59,13 @@ exports.createNeed = async (req, res) => {
 
 exports.getNeeds = async (req, res) => {
     try {
-        const { region, category, status } = req.query;
+        const { region, category, status, type } = req.query;
         let whereClause = {};
 
         if (region) whereClause.region = region;
         if (category) whereClause.category = category;
         if (status) whereClause.status = status;
+        if (type) whereClause.type = type;
 
         const needs = await Need.findAll({
             where: whereClause,
@@ -130,6 +132,14 @@ exports.updateNeedStatus = async (req, res) => {
         }
 
         if (status) need.status = status;
+
+        // Save evidence if file is uploaded
+        if (req.file) {
+            const protocol = req.protocol;
+            const host = req.get('host');
+            need.evidenceUrl = `${protocol}://${host}/uploads/${req.file.filename}`;
+        }
+
         if (isVerified !== undefined && req.user.role === 'ADMIN') {
             need.isVerified = isVerified;
             if (isVerified) {

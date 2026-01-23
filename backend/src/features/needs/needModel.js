@@ -61,6 +61,14 @@ const Need = sequelize.define('Need', {
         type: DataTypes.STRING,
         allowNull: true,
     },
+    evidenceUrl: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    type: {
+        type: DataTypes.ENUM('REQUEST', 'OFFER'),
+        defaultValue: 'REQUEST',
+    },
 });
 
 Need.belongsTo(User, { as: 'requester', foreignKey: 'userId', constraints: false });

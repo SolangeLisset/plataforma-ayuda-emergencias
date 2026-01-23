@@ -70,7 +70,9 @@ const OfferHelpModal = ({ need, onClose, onSuccess }) => {
                     <X size={24} />
                 </button>
 
-                <h2 className="text-2xl font-bold mb-4">Ofrecer Ayuda</h2>
+                <h2 className="text-xl font-bold mb-4">
+                    {need.type === 'OFFER' ? 'Coordinar Ayuda Recibida' : 'Ofrecer Ayuda'}
+                </h2>
                 <p className="text-gray-600 mb-6">
                     Estás ofreciendo ayuda para: <br />
                     <span className="font-semibold text-gray-800">{need.title}</span>

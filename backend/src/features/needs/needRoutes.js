@@ -37,8 +37,8 @@ router.get('/:id', optionalAuthMiddleware, needController.getNeedById);
 
 // @route   PUT api/needs/:id
 // @desc    Update need status
-// @access  Private
-router.put('/:id', authMiddleware, needController.updateNeedStatus);
+// Update status (Admin/Helper) - Now supports file upload for evidence
+router.put('/:id', authMiddleware, upload.single('evidence'), needController.updateNeedStatus);
 
 // @route   DELETE api/needs/:id
 // @desc    Delete need

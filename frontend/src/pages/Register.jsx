@@ -35,8 +35,16 @@ const Register = () => {
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Teléfono</label>
-                    <input type="text" className="mt-1 block w-full border p-2 rounded"
-                        value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} />
+                    <input
+                        type="tel"
+                        className="mt-1 block w-full border p-2 rounded"
+                        placeholder="+56 9 1234 5678"
+                        value={formData.phone}
+                        onChange={e => {
+                            const val = e.target.value.replace(/[^0-9+\s-]/g, '');
+                            setFormData({ ...formData, phone: val });
+                        }}
+                    />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Soy principalmente:</label>

@@ -3,11 +3,13 @@ import { useConfig } from '../context/ConfigContext';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import { useToast } from '../context/ToastContext';
 
 const CreateNeed = () => {
     const { config } = useConfig();
     const { user } = useAuth();
     const navigate = useNavigate();
+    const { showToast } = useToast();
 
     const [formData, setFormData] = useState({
         title: '',
@@ -18,7 +20,8 @@ const CreateNeed = () => {
         latitude: 0,
         longitude: 0,
         contactName: '',
-        contactPhone: ''
+        contactPhone: '',
+        type: 'REQUEST' // REQUEST or OFFER
     });
     const [image, setImage] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -36,12 +39,11 @@ const CreateNeed = () => {
             Object.keys(formData).forEach(key => data.append(key, formData[key]));
             if (image) data.append('image', image);
 
-            await api.post('/needs', data, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            });
+            await api.post('/needs', data);
+            showToast('Solicitud publicada con éxito', 'success');
             navigate('/needs');
         } catch (err) {
-            alert('Error al crear la solicitud');
+            showToast('Error al crear la solicitud', 'error');
         } finally {
             setLoading(false);
         }
@@ -49,8 +51,28 @@ const CreateNeed = () => {
 
     return (
         <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow">
-            <h2 className="text-2xl font-bold mb-6">Solicitar Ayuda {user ? '' : '(Modo Invitado)'}</h2>
+            <h2 className="text-2xl font-bold mb-6">
+                {formData.type === 'REQUEST' ? 'Solicitar Ayuda' : 'Ofrecer Ayuda / Logística'} {user ? '' : '(Invitado)'}
+            </h2>
+
             <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Type Selector */}
+                <div className="flex bg-gray-100 p-1 rounded-lg">
+                    <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, type: 'REQUEST' })}
+                        className={`flex-1 py-2 text-sm font-bold rounded-md transition ${formData.type === 'REQUEST' ? 'bg-white shadow text-red-600' : 'text-gray-500 hover:text-gray-700'}`}
+                    >
+                        Necesito Ayuda
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, type: 'OFFER' })}
+                        className={`flex-1 py-2 text-sm font-bold rounded-md transition ${formData.type === 'OFFER' ? 'bg-green-600 text-white shadow' : 'text-gray-500 hover:text-gray-700'}`}
+                    >
+                        Quiero Ayudar
+                    </button>
+                </div>
 
                 {/* Guest Fields - Visible only if not logged in */}
                 {!user && (
@@ -68,9 +90,17 @@ const CreateNeed = () => {
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700">Teléfono</label>
-                            <input type="tel" required={!user} className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                            <input
+                                type="tel"
+                                required={!user}
+                                className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                                 placeholder="+56 9 1234 5678"
-                                value={formData.contactPhone} onChange={e => setFormData({ ...formData, contactPhone: e.target.value })} />
+                                value={formData.contactPhone}
+                                onChange={e => {
+                                    const val = e.target.value.replace(/[^0-9+\s-]/g, '');
+                                    setFormData({ ...formData, contactPhone: val });
+                                }}
+                            />
                             <p className="text-xs text-gray-500 mt-1">📱 Este número solo será visible para personas registradas que ofrezcan ayuda.</p>
                         </div>
                     </div>
@@ -79,7 +109,7 @@ const CreateNeed = () => {
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Título Breve</label>
                     <input type="text" required className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        placeholder="Ej: Necesito agua y pañales"
+                        placeholder={formData.type === 'REQUEST' ? 'Ej: Necesito agua y pañales' : 'Ej: Ofrezco transporte Chillán-Concepción'}
                         value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} />
                 </div>
 
@@ -147,8 +177,8 @@ const CreateNeed = () => {
                     ℹ️ Tu solicitud será visible públicamente. No compartas datos sensibles como RUT, dirección exacta o información bancaria en la descripción pública.
                 </div>
 
-                <button type="submit" disabled={loading} className="w-full bg-red-600 text-white py-3 rounded-lg font-bold hover:bg-red-700">
-                    {loading ? 'Enviando...' : 'Publicar Solicitud'}
+                <button type="submit" disabled={loading} className={`w-full py-3 rounded-lg font-bold transition ${formData.type === 'REQUEST' ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'} text-white`}>
+                    {loading ? 'Enviando...' : (formData.type === 'REQUEST' ? 'Publicar Solicitud' : 'Publicar Ofrecimiento')}
                 </button>
             </form>
         </div>
