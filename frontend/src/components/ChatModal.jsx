@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { Send, X, User as UserIcon, Loader } from 'lucide-react';
@@ -89,13 +90,16 @@ const ChatModal = ({ need, onClose }) => {
                             return (
                                 <div key={msg.id || index} className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
                                     <div className={`max-w-[80%] rounded-2xl px-4 py-2 shadow-sm text-sm ${isMine
-                                            ? 'bg-red-600 text-white rounded-tr-none'
-                                            : 'bg-white text-gray-800 rounded-tl-none border border-gray-100'
+                                        ? 'bg-red-600 text-white rounded-tr-none'
+                                        : 'bg-white text-gray-800 rounded-tl-none border border-gray-100'
                                         }`}>
                                         {!isMine && (
-                                            <p className="font-black text-[9px] uppercase tracking-wider mb-1 text-red-600">
+                                            <Link
+                                                to={`/profile/${msg.senderId}`}
+                                                className="font-black text-[9px] uppercase tracking-wider mb-1 text-red-600 block hover:underline"
+                                            >
                                                 {msg.sender?.name}
-                                            </p>
+                                            </Link>
                                         )}
                                         <p className="leading-relaxed">{msg.content}</p>
                                         <p className={`text-[9px] mt-1 text-right ${isMine ? 'text-white/60' : 'text-gray-400'}`}>

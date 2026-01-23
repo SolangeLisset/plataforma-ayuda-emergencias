@@ -12,6 +12,7 @@ import CreateNeed from './pages/CreateNeed';
 import AdminDashboard from './pages/AdminDashboard';
 import DisasterMap from './pages/DisasterMap';
 import Inbox from './pages/Inbox';
+import Profile from './pages/Profile';
 import Navbar from './components/Navbar';
 
 import { HelmetProvider } from 'react-helmet-async';
@@ -39,6 +40,8 @@ function App() {
                                 <Route path="/needs/new" element={<CreateNeed />} />
                                 <Route path="/map" element={<DisasterMap />} />
                                 <Route path="/inbox" element={<Inbox />} />
+                                <Route path="/profile" element={<Profile />} />
+                                <Route path="/profile/:id" element={<Profile />} />
                                 <Route path="/admin" element={<AdminDashboard />} />
                                 <Route path="*" element={<Navigate to="/" />} />
                             </Routes>

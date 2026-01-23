@@ -33,14 +33,11 @@ router.post(
 // @route   GET api/auth/me
 // @desc    Get current user
 // @access  Private
-router.get('/me', authMiddleware, async (req, res) => {
-    try {
-        const user = await User.findByPk(req.user.id, { attributes: { exclude: ['password'] } });
-        res.json(user);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
+router.get('/me', authMiddleware, authController.getMe);
+
+// @route   GET api/auth/profile/:id
+// @desc    Get public user profile
+// @access  Public (or Private, I'll keep it public for trust)
+router.get('/profile/:id', authController.getUserProfile);
 
 module.exports = router;

@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
 const User = require('./userModel');
+const Donation = require('../donations/donationModel');
 
 exports.register = async (req, res) => {
     const errors = validationResult(req);
@@ -87,6 +88,53 @@ exports.login = async (req, res) => {
                 res.json({ token, user: { id: user.id, fullName: user.fullName, role: user.role } });
             }
         );
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+};
+
+exports.getMe = async (req, res) => {
+    try {
+        const user = await User.findByPk(req.user.id, {
+            attributes: { exclude: ['password'] }
+        });
+
+        const helpCount = await Donation.count({
+            where: { donorId: req.user.id, status: 'DELIVERED' }
+        });
+
+        res.json({
+            ...user.toJSON(),
+            helpCount
+        });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+};
+
+exports.getUserProfile = async (req, res) => {
+    try {
+        const user = await User.findByPk(req.params.id, {
+            attributes: ['id', 'fullName', 'role', 'createdAt']
+        });
+
+        if (!user) {
+            return res.status(404).json({ msg: 'User not found' });
+        }
+
+        const helpCount = await Donation.count({
+            where: { donorId: req.params.id, status: 'DELIVERED' }
+        });
+
+        res.json({
+            id: user.id,
+            fullName: user.fullName,
+            role: user.role,
+            createdAt: user.createdAt,
+            helpCount
+        });
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');

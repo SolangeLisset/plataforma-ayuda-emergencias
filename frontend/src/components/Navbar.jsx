@@ -39,10 +39,13 @@ const Navbar = ({ appName }) => {
 
                         {user ? (
                             <div className="flex items-center gap-4 ml-4">
-                                <span className="text-sm font-medium text-gray-600 flex items-center gap-1">
-                                    <UserIcon size={16} /> {user.fullName}
-                                </span>
-                                <button onClick={handleLogout} className="text-gray-500 hover:text-red-600">
+                                <Link to="/profile" className="text-sm font-bold text-gray-700 hover:text-red-600 transition-colors flex items-center gap-1.5 p-1 px-2 rounded-lg hover:bg-gray-50 group">
+                                    <div className="bg-gray-100 p-1 rounded-md group-hover:bg-red-50 group-hover:text-red-600 transition-all">
+                                        <UserIcon size={14} />
+                                    </div>
+                                    {user.fullName}
+                                </Link>
+                                <button onClick={handleLogout} className="text-gray-400 hover:text-red-600 transition-colors ml-1">
                                     <LogOut size={20} />
                                 </button>
                             </div>
