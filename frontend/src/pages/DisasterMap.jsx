@@ -4,6 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import { useConfig } from '../context/ConfigContext';
 import api from '../services/api';
 import L from 'leaflet';
+import { Helmet } from 'react-helmet-async';
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
@@ -52,9 +53,12 @@ const DisasterMap = () => {
     if (loading) return <div className="text-center p-10">Cargando mapa...</div>;
 
     return (
-        <div className="h-[calc(100vh-64px)] w-full relative">
-            {/* Map Filters Overlay */}
-            <div className="absolute top-4 right-4 z-[1000] bg-white p-2 rounded shadow-lg">
+        <div className="h-[calc(100vh-160px)] flex flex-col gap-4">
+            <Helmet>
+                <title>Mapa de Ayuda | {config?.general?.appName || 'Ayuda Civil'}</title>
+                <meta name="description" content={`Visualiza en tiempo real los focos de necesidad y puntos de ayuda en ${config?.general?.countryCode || 'Chile'}. Mapa interactivo para coordinación ciudadana.`} />
+            </Helmet>
+            <div className="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-gray-100">
                 <select
                     className="p-2 border rounded text-sm min-w-[150px]"
                     value={filterCategory}

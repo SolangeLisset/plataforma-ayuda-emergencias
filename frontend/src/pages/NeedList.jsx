@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import OfferHelpModal from '../components/OfferHelpModal';
 import { MapPin, Calendar, CheckCircle } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
+import { Helmet } from 'react-helmet-async';
 
 const NeedList = () => {
     const { config } = useConfig();
@@ -55,6 +56,10 @@ const NeedList = () => {
 
     return (
         <div className="container mx-auto px-4 sm:px-0">
+            <Helmet>
+                <title>Listado de Ayuda | {config.general.appName}</title>
+                <meta name="description" content={`Consulta las necesidades y ofrecimientos de ayuda en tiempo real. Filtra por región y categoría para coordinar apoyo en ${config.general.countryCode}.`} />
+            </Helmet>
             <h1 className="text-2xl sm:text-3xl font-bold mb-4 text-gray-800">Listado de Ayuda</h1>
 
             {/* Filters Section */}
@@ -156,14 +161,14 @@ const NeedList = () => {
                                         {need.type === 'OFFER' ? 'Ofrecimiento' : 'Necesidad'}
                                     </span>
                                     <span className={`px-1.5 py-0.5 rounded-[4px] text-[9px] font-black uppercase tracking-widest ${{
-                                            'red': 'bg-red-100 text-red-800 border-red-200',
-                                            'blue': 'bg-blue-100 text-blue-800 border-blue-200',
-                                            'green': 'bg-green-100 text-green-800 border-green-200',
-                                            'orange': 'bg-orange-100 text-orange-800 border-orange-200',
-                                            'purple': 'bg-purple-100 text-purple-800 border-purple-200',
-                                            'cyan': 'bg-cyan-100 text-cyan-800 border-cyan-200',
-                                            'gray': 'bg-gray-100 text-gray-800 border-gray-200',
-                                        }[getCategoryColor(need.category)] || 'bg-gray-100 text-gray-800'
+                                        'red': 'bg-red-100 text-red-800 border-red-200',
+                                        'blue': 'bg-blue-100 text-blue-800 border-blue-200',
+                                        'green': 'bg-green-100 text-green-800 border-green-200',
+                                        'orange': 'bg-orange-100 text-orange-800 border-orange-200',
+                                        'purple': 'bg-purple-100 text-purple-800 border-purple-200',
+                                        'cyan': 'bg-cyan-100 text-cyan-800 border-cyan-200',
+                                        'gray': 'bg-gray-100 text-gray-800 border-gray-200',
+                                    }[getCategoryColor(need.category)] || 'bg-gray-100 text-gray-800'
                                         }`}>
                                         {getCategoryLabel(need.category)}
                                     </span>

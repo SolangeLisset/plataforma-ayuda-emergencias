@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useConfig } from '../context/ConfigContext';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { AlertTriangle, Heart, Map, Phone, ChevronDown, ChevronUp, ExternalLink, Info, Home as HomeIcon } from 'lucide-react';
 
 const Home = () => {
@@ -16,6 +17,10 @@ const Home = () => {
 
     return (
         <div className="max-w-3xl mx-auto pb-12">
+            <Helmet>
+                <title>Inicio | {config?.general?.appName || 'Ayuda Civil'}</title>
+                <meta name="description" content={`Bienvenido a ${config?.general?.appName || 'Ayuda Civil'}. Plataforma de coordinación para emergencias en ${config?.general?.countryCode || 'Chile'}.`} />
+            </Helmet>
             {/* HERO SECTION */}
             <div className="text-center py-8">
                 <h1 className="text-3xl font-extrabold text-gray-900 mb-2">{emergency.name}</h1>
