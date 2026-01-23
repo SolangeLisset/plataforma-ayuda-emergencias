@@ -11,6 +11,7 @@ const authRoutes = require('./features/auth/authRoutes');
 const needRoutes = require('./features/needs/needRoutes');
 const donationRoutes = require('./features/donations/donationRoutes');
 const messageRoutes = require('./features/messages/messageRoutes');
+const announcementRoutes = require('./features/announcements/announcementRoutes');
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/needs', needRoutes);
 app.use('/api/donations', donationRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/announcements', announcementRoutes);
 
 // Config endpoint for frontend
 app.get('/api/config', (req, res) => {

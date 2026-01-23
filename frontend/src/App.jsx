@@ -14,6 +14,7 @@ import DisasterMap from './pages/DisasterMap';
 import Inbox from './pages/Inbox';
 import Profile from './pages/Profile';
 import Navbar from './components/Navbar';
+import AnnouncementBanner from './components/AnnouncementBanner';
 
 import { HelmetProvider } from 'react-helmet-async';
 import { ToastProvider } from './context/ToastContext';
@@ -30,6 +31,7 @@ function App() {
             <ToastProvider>
                 <Router>
                     <div className="min-h-screen bg-gray-50 flex flex-col">
+                        <AnnouncementBanner />
                         <Navbar appName={config.general.appName} />
                         <main className="flex-grow container mx-auto px-4 py-8">
                             <Routes>
