@@ -3,9 +3,10 @@ import api from '../services/api';
 import { useConfig } from '../context/ConfigContext';
 import { useAuth } from '../context/AuthContext';
 import OfferHelpModal from '../components/OfferHelpModal';
-import { MapPin, Calendar, CheckCircle, Search, X } from 'lucide-react';
+import { MapPin, Calendar, CheckCircle, Search, X, MessageCircle } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 import { Helmet } from 'react-helmet-async';
+import ChatModal from '../components/ChatModal';
 
 const NeedList = () => {
     const { config } = useConfig();
@@ -16,6 +17,7 @@ const NeedList = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(true);
     const [selectedNeed, setSelectedNeed] = useState(null);
+    const [chatNeed, setChatNeed] = useState(null);
 
     useEffect(() => {
         fetchNeeds();
@@ -294,9 +296,25 @@ const NeedList = () => {
                                         {need.type === 'OFFER' ? 'Contactar / Coordinar' : 'Ofrecer Ayuda'}
                                     </button>
                                 )}
+                                {user && (
+                                    <button
+                                        onClick={() => setChatNeed(need)}
+                                        className="w-full mt-2 bg-gray-100 text-gray-700 py-2 rounded font-medium hover:bg-gray-200 transition text-sm flex items-center justify-center gap-2"
+                                    >
+                                        <MessageCircle size={16} /> Chat de Coordinación
+                                    </button>
+                                )}
                             </div>
                         </div>
                     ))
+                    }
+                    {
+                        chatNeed && (
+                            <ChatModal
+                                need={chatNeed}
+                                onClose={() => setChatNeed(null)}
+                            />
+                        )
                     }
                 </div >
             )}
