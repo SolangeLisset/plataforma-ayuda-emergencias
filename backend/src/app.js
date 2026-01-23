@@ -14,6 +14,16 @@ const messageRoutes = require('./features/messages/messageRoutes');
 const announcementRoutes = require('./features/announcements/announcementRoutes');
 
 const app = express();
+const server = require('http').createServer(app);
+const io = require('socket.io')(server, {
+    cors: {
+        origin: "*", // Adjust in production
+        methods: ["GET", "POST"]
+    }
+});
+
+// Make io accessible in controllers
+app.set('io', io);
 
 // Middleware
 app.use(helmet());
@@ -28,6 +38,20 @@ app.use('/api/needs', needRoutes);
 app.use('/api/donations', donationRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/announcements', announcementRoutes);
+
+// Socket.io connection logic
+io.on('connection', (socket) => {
+    console.log('User connected:', socket.id);
+
+    socket.on('join_room', (room) => {
+        socket.join(room);
+        console.log(`User ${socket.id} joined room: ${room}`);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('User disconnected:', socket.id);
+    });
+});
 
 // Config endpoint for frontend
 app.get('/api/config', (req, res) => {
@@ -44,13 +68,11 @@ const startServer = async () => {
         await sequelize.authenticate();
         console.log('Database connected...');
 
-        // Sync models (in production usage migrations instead of sync)
-        // await sequelize.sync({ force: false }); // Don't force in prod
-        // For development, to create tables:
+        // Sync models
         await sequelize.sync({ alter: true });
         console.log('Models synced...');
 
-        app.listen(PORT, () => {
+        server.listen(PORT, () => {
             console.log(`Server running on port ${PORT}`);
         });
     } catch (err) {

@@ -22,6 +22,10 @@ exports.sendMessage = async (req, res) => {
             include: [{ model: User, as: 'sender', attributes: ['name', 'email'] }]
         });
 
+        // Emit socket event
+        const io = req.app.get('io');
+        io.to(`need_${needId}`).emit('new_message', fullMessage);
+
         res.status(201).json(fullMessage);
     } catch (err) {
         console.error(err);

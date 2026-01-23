@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
+import socket from '../services/socket';
 import { useAuth } from '../context/AuthContext';
 import { Send, X, User as UserIcon, Loader } from 'lucide-react';
 
@@ -20,17 +21,31 @@ const ChatModal = ({ need, onClose }) => {
         try {
             const res = await api.get(`/messages/need/${need.id}`);
             setMessages(res.data);
+            setLoading(false);
         } catch (err) {
             console.error('Error fetching messages:', err);
-        } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
         fetchMessages();
-        const interval = setInterval(fetchMessages, 5000); // Poll every 5 seconds
-        return () => clearInterval(interval);
+
+        // Join the room for this need
+        socket.emit('join_room', `need_${need.id}`);
+
+        // Listen for new messages
+        socket.on('new_message', (message) => {
+            setMessages((prev) => {
+                // Check if message already exists to avoid duplicates
+                if (prev.find(m => m.id === message.id)) return prev;
+                return [...prev, message];
+            });
+        });
+
+        return () => {
+            socket.off('new_message');
+        };
     }, [need.id]);
 
     useEffect(() => {
